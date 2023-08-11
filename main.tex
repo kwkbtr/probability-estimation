@@ -1,6 +1,6 @@
 \RequirePackage{plautopatch}
 \documentclass[uplatex,dvipdfmx]{jlreq}
-% \usepackage{amsmath}
+\usepackage{amsmath}
 \usepackage{amsthm}
 
 \newcommand\term[1]{\textsf{#1}}
@@ -12,7 +12,7 @@
 \title{確率と統計的推定の基本}
 \maketitle
 
-\section{確率}
+\section{確率の基本}
 
 \subsection{確率空間}
 
@@ -22,18 +22,18 @@
 
 標本空間$\Omega$上の実数値関数で以下を満たす$P$を\term{確率 (probability)}とする。
 
-\[
+\begin{equation}
     0 \leq P(\omega) \leq 1,
     \quad \sum_{\omega\in\Omega} P(\omega) = 1
-\]
+\end{equation}
 
 （本来は$P(\{\omega\})$と書くべき）
 
 $\Omega$の部分集合$A$の確率も以下のように定義できる。
 
-\[
+\begin{equation}
     P(A) := \sum_{\omega\in A}P(\omega)
-\]
+\end{equation}
 
 確率が与えられた標本空間を\term{確率空間 (probability space)}と呼ぶ。
 
@@ -59,36 +59,43 @@ $\Omega$の部分集合$A$の確率も以下のように定義できる。
 
 確率空間$\Omega$上の確率変数$X\colon \Omega \to E$に対して、その\term{確率分布 (probability distribution)}（単に分布と呼ぶこともある）を考えることができる。
 
-\[
+\begin{equation}
     p_X(x) := P(\{\omega | X(\omega) = x\})
     = \sum_{\omega \in \Omega, X(\omega) = x} P(\omega)
-\]
+\end{equation}
 
 文脈上明らかな時は$p_X(x)$のことを単に$p(x)$と書くことも多い。明らかに以下の性質が成り立つ。
 
-\[
+\begin{equation}
     0 \leq p_X(x) \leq 1, \quad \sum_x p_X(x) = 1
-\]
+\end{equation}
 
 \begin{note}
-    より正確には、確率分布とは$X$が部分集合$A$ ($\subset E$) 内に値を取る確率（測度）のことを言う。$X$の取りうる値が離散的な場合、1点$x$を取る確率 $p_X(x)$ を\term{確率質量関数}と呼ぶ。$X$が連続的な値を取りうる場合、\term{累積分布関数}や\term{確率密度関数}を考える必要がある。
+    より正確には、確率分布とは$X$が部分集合$A$ ($\subset E$) 内に値を取る確率（測度）のことを言う。$X$の取りうる値が離散的な場合、1点$x$を取る確率 $p_X(x)$ を\term{確率質量関数 (probability mass function)}と呼ぶ。$X$が連続的な値を取りうる場合、\term{累積分布関数 (cumulative distribution function)}や\term{確率密度関数 (probability density function)}を考える必要がある。
 \end{note}
+
+共通の確率空間$\Omega$上の2つの確率変数$X$, $Y$に対して、$(X, Y)$も確率変数である。$(X, Y)$の確率分布$p_{(X, Y)}(x, y)$を\term{同時確率分布 (joint probability distribution)}という。逆に、同時分布から導いた$X$, $Y$単独の分布を\term{周辺確率分布 (marginal probability distribution)}という。周辺分布は、同時分布から以下のように計算できる。
+
+\begin{equation}
+    p_X(x) = \sum_y p_{(X, Y)}(x, y),\quad
+    p_Y(y) = \sum_x p_{(X, Y)}(x, y)
+\end{equation}
 
 \subsection{確率変数の期待値・分散}
 
-確率変数$X(\omega)$とその分布$p_X(x)$が与えられた時、$X$の\term{期待値}は以下で定義される数である。
+確率変数$X(\omega)$とその分布$p_X(x)$が与えられた時、$X$の\term{期待値 (expectation value)}は以下で定義される数である。
 
-\[
+\begin{equation}
     E[X] := \sum_x x \cdot p_X(x)
-\]
+\end{equation}
 
 確率変数$X$は確率的に値$x$を取るものであるのに対して、期待値$E[X]$は確定した値であることに注意。
 
 $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考えることができる。
 
-\[
+\begin{equation}
     E[Y] := \sum_y y \cdot p_Y(y) = \sum_x f(x)p_X(x)
-\]
+\end{equation}
 
 \begin{note}
     $X$が連続的な値を取る場合、期待値は積分で定義される。その場合、$Y$の期待値計算は積分の変数変換となり、$f'(x)$をかける必要があることに注意。
@@ -96,22 +103,70 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
 
 確率変数の線型結合に関して、期待値は線形であることが定義から分かる。
 
-\[
+\begin{equation}
     E[aX + bY] = aE[X] + bE[Y]
-\]
+\end{equation}
 
-確率変数$X$に対して、その期待値からのずれの2乗$(X-E[X])^2$も確率変数である。これの期待値を$X$の\term{分散}と呼ぶ。
+確率変数$X$に対して、その期待値からのずれの2乗$(X-E[X])^2$も確率変数である。これの期待値を$X$の\term{分散 (variance)}と呼ぶ。
 
-\[
+\begin{equation}
     V[X] := E[(X-E[X])^2] = \sum_x (x-E[X])^2 p_X(x)
-\]
+\end{equation}
 
-分散の2乗根$\sqrt{V[X]}$を\term{標準偏差}と呼び、$\sigma$で書くことが多い。これを使って分散を$\sigma^2$と書くこともある。（なぜか$\sigma[X]$という表記はあまり見ない気がする）
+分散の2乗根$\sqrt{V[X]}$を\term{標準偏差 (standard deviation)}と呼び、$\sigma$で書くことが多い。これを使って分散を$\sigma^2$と書くこともある。（なぜか$\sigma[X]$という表記はあまり見ない気がする）
 
 分散の定義から以下が導ける。
 
-\[
+\begin{equation}
     V[X] := E[(X-E[X])^2] = E[X^2] - E[X]^2
-\]
+\end{equation}
+
+2つの確率変数$X, Y$について、それぞれの期待値からのずれの積の期待値を$X$, $Y$の\term{共分散 (covariance)}と呼ぶ。
+
+\begin{equation}
+    \operatorname{Cov}[X, Y] :=
+    E[(X-E[X])(Y-E[Y])]
+\end{equation}
+
+定義から以下の関係が成り立つ。
+
+\begin{equation}
+    V[X + Y] = V[X] + V[Y] + 2\operatorname{Cov}[X, Y]
+\end{equation}
+
+\subsection{独立性}
+
+2つの事象間、2つの確率変数間の独立性が定義できる。
+
+2つの事象$A, B$が\term{独立 (independent)}とは、$P(A \cap B) = P(A)P(B)$が成り立つことである。
+
+共通の確率空間$\Omega$上の2つの確率変数$X$, $Y$が\term{独立 (independent)}とは、$X$, $Y$の取りうる値の任意の集合$A_X$, $B_Y$について、
+
+\begin{equation}
+    P(\{\omega|X(\omega)\in A_X, Y(\omega)\in B_Y\}) =
+    P(\{\omega|X(\omega)\in A_X\})P(\{\omega|Y(\omega)\in B_Y\})
+\end{equation}
+
+が成り立つことであるが、これは任意の$x, y$に対して以下が成り立つことと同値である。
+
+\begin{equation}
+    p_{(X, Y)}(x, y) = p_X(x) p_Y(y)
+\end{equation}
+
+すなわち、同時確率分布が周辺確率分布の積になっているということ。
+
+確率変数$X, Y$が独立なら、任意の関数$f$, $g$に対して$f(X)$, $g(Y)$も独立。
+
+確率変数$X, Y$が独立なら、その積の期待値は、期待値の積と一致する（逆は成り立たないことに注意）。
+
+\begin{equation}
+    E[XY] = E[X]E[Y]
+\end{equation}
+
+これを使うとさらに、共分散が0であり、和の分散が分散の和に一致することも分かる。
+
+\begin{equation}
+    \operatorname{Cov}[X, Y] = 0,\quad V[X + Y] = V[X] + V[Y]
+\end{equation}
 
 \end{document}
