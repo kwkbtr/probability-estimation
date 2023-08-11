@@ -1,8 +1,117 @@
 \RequirePackage{plautopatch}
 \documentclass[uplatex,dvipdfmx]{jlreq}
+% \usepackage{amsmath}
+\usepackage{amsthm}
+
+\newcommand\term[1]{\textsf{#1}}
+\newtheorem{example}{例}
+\newtheorem{note}{注}
 
 \begin{document}
 
-Template
+\title{確率と統計的推定の基本}
+\maketitle
+
+\section{確率}
+
+\subsection{確率空間}
+
+起こりうる試行結果全体の集合を\term{標本空間 (sample space)}という。標本空間の部分集合を\term{事象 (event)}といい、標本空間の1つの要素からなる事象を\term{根元事象 (elementary event)}という。
+
+この文書では標本空間の要素が有限個の場合のみ扱う。登場する和も全て有限和。
+
+標本空間$\Omega$上の実数値関数で以下を満たす$P$を\term{確率 (probability)}とする。
+
+\[
+    0 \leq P(\omega) \leq 1,
+    \quad \sum_{\omega\in\Omega} P(\omega) = 1
+\]
+
+（本来は$P(\{\omega\})$と書くべき）
+
+$\Omega$の部分集合$A$の確率も以下のように定義できる。
+
+\[
+    P(A) := \sum_{\omega\in A}P(\omega)
+\]
+
+確率が与えられた標本空間を\term{確率空間 (probability space)}と呼ぶ。
+
+\begin{note}
+    標本空間がより一般の場合（特に連続濃度を持つ場合など）、数学的には測度論の言葉を使って定義される。その場合、標本空間は可測空間、事象は可測集合、確率は確率測度に対応する。
+\end{note}
+
+\subsection{確率変数}
+
+確率空間$\Omega$上の関数、すなわち各根元事象$\omega$に対して数（やベクトル）を対応させるものを\term{確率変数 (probabilistic variable)}と呼ぶ。確率変数であることを強調するために、$X, Y$といった大文字の変数名にすることもある。
+
+実際に出てくる例では、確率空間$\Omega$自体が数やベクトル空間になっていることも多く、この場合は根元事象$\omega$自体を確率変数と捉えてよい。
+
+\begin{example}
+    コイン投げを2回行った時の表裏の出方を考える。表を$H$, 裏を$T$と書くと、標本空間は$\Omega=\{(H, H), (H, T), (T, H), (T, T)\}$. 表が出た回数を考えるとこれは関数$f\colon \Omega \to \{0, 1, 2\}$であり、確率変数。
+\end{example}
+
+\begin{example}
+    サイコロを1回投げて出た目の事象を考えると、$\Omega=\{1, 2, 3, 4, 5, 6\}$としてよく、根元事象自体を確率変数$X$と思うことができる。$X$の関数も確率変数（$X^2$, $e^X$, $(X, X^2, X^3)$など）。
+\end{example}
+
+\subsection{確率分布}
+
+確率空間$\Omega$上の確率変数$X\colon \Omega \to E$に対して、その\term{確率分布 (probability distribution)}（単に分布と呼ぶこともある）を考えることができる。
+
+\[
+    p_X(x) := P(\{\omega | X(\omega) = x\})
+    = \sum_{\omega \in \Omega, X(\omega) = x} P(\omega)
+\]
+
+文脈上明らかな時は$p_X(x)$のことを単に$p(x)$と書くことも多い。明らかに以下の性質が成り立つ。
+
+\[
+    0 \leq p_X(x) \leq 1, \quad \sum_x p_X(x) = 1
+\]
+
+\begin{note}
+    より正確には、確率分布とは$X$が部分集合$A$ ($\subset E$) 内に値を取る確率（測度）のことを言う。$X$の取りうる値が離散的な場合、1点$x$を取る確率 $p_X(x)$ を\term{確率質量関数}と呼ぶ。$X$が連続的な値を取りうる場合、\term{累積分布関数}や\term{確率密度関数}を考える必要がある。
+\end{note}
+
+\subsection{確率変数の期待値・分散}
+
+確率変数$X(\omega)$とその分布$p_X(x)$が与えられた時、$X$の\term{期待値}は以下で定義される数である。
+
+\[
+    E[X] := \sum_x x \cdot p_X(x)
+\]
+
+確率変数$X$は確率的に値$x$を取るものであるのに対して、期待値$E[X]$は確定した値であることに注意。
+
+$X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考えることができる。
+
+\[
+    E[Y] := \sum_y y \cdot p_Y(y) = \sum_x f(x)p_X(x)
+\]
+
+\begin{note}
+    $X$が連続的な値を取る場合、期待値は積分で定義される。その場合、$Y$の期待値計算は積分の変数変換となり、$f'(x)$をかける必要があることに注意。
+\end{note}
+
+確率変数の線型結合に関して、期待値は線形であることが定義から分かる。
+
+\[
+    E[aX + bY] = aE[X] + bE[Y]
+\]
+
+確率変数$X$に対して、その期待値からのずれの2乗$(X-E[X])^2$も確率変数である。これの期待値を$X$の\term{分散}と呼ぶ。
+
+\[
+    V[X] := E[(X-E[X])^2] = \sum_x (x-E[X])^2 p_X(x)
+\]
+
+分散の2乗根$\sqrt{V[X]}$を\term{標準偏差}と呼び、$\sigma$で書くことが多い。これを使って分散を$\sigma^2$と書くこともある。（なぜか$\sigma[X]$という表記はあまり見ない気がする）
+
+分散の定義から以下が導ける。
+
+\[
+    V[X] := E[(X-E[X])^2] = E[X^2] - E[X]^2
+\]
 
 \end{document}
