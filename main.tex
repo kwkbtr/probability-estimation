@@ -1,5 +1,6 @@
 \RequirePackage{plautopatch}
 \documentclass[uplatex,dvipdfmx]{jlreq}
+\usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -286,7 +287,7 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
     この導出で使用しているのは、各$X_i$の期待値、分散が$\mu$, $\sigma^2$であるという前提のみである。$X_1, \dotsc, X_n$が独立同分布であれば、この条件は当然成り立つ。
 \end{example}
 
-\begin{example}[期待値が未知の場合の分散の不偏推定量]
+\begin{example}[期待値が未知の場合の分散の不偏推定量]\label{u_est_var}
     標本$X_1, \dotsc, X_n$のそれぞれが、期待値$\mu$, 分散$\sigma^2$の分布にしたがうとする。今、$\mu$, $\sigma^2$はともに未知であるとする。例\ref{u_est_exp}より、$\bar{X}$は$\mu$の不偏推定量である。\term{標本分散 (sample variance)} $S^2$を以下で定義する。
     \begin{equation}
         S^2 := \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2
@@ -332,5 +333,65 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
 \begin{note}
     「標本分散」という言葉の使われ方は曖昧で、$n$で割るものを指す場合、$n-1$で割るものを指す場合、両方を指す場合があるらしい。また記号も、$s^2$や$\hat{\sigma}^2$をどちらか（どちらも）に使うことがある。この文書では上の例で書いている通り、$n$で割るものを標本分散$S^2$, $n-1$で割るものを不偏分散$S_0^2$とする。
 \end{note}
+
+パラメーター$\theta$の不偏推定量$\hat{\theta}(\boldsymbol{X})$が与えられた時に、$\theta$の関数$g(\theta)$に対して、$g(\hat{\theta}(\boldsymbol{X}))$は一般に不偏推定量ではない。
+
+\begin{example}
+    期待値$\mu$の関数$g(\mu)$を考える。標本平均$\bar{X}=\sum_i X_i/n$は$\mu$の不偏推定量だった。$g(\bar{X})$が$g(\mu)$の不偏推定量になるかを考える。$g$が線形な関数であれば、
+    \begin{equation}
+        E[g(\bar{X})]
+        = E\left[g\left(\frac{1}{n}\sum_{i=1}^n X_i\right)\right]
+        = \frac{1}{n}\sum_{i=1}^n E[g(X_i)]
+    \end{equation}
+    さらに
+    \begin{equation}
+        E[g(X)] = \sum_x g(x)p_X(x)
+        = g\left(\sum_x x\cdot p_X(x)\right)
+        = g(E[X]) = g(\mu)
+    \end{equation}
+    より
+    \begin{equation}
+        E[g(\bar{X})] = g(\mu)
+    \end{equation}
+    となり、$g(\bar{X})$は$g(\mu)$の不偏推定量になることが分かる。$g$が線形でない場合は必ずしも不偏推定量になるとはいえない。そのずれの大きさを見てみよう。確率変数$\bar{X}$の期待値からのずれ$\delta := \bar{X} - \mu$を定義し、$g(\bar{X})$を$g(\mu)$の周りで$\delta$で展開してみる\footnote{この計算は確率変数$\delta$を単なる微小な数とみなして行っており、正確な議論ではない。}。
+    \begin{equation}
+        g(\bar{X})
+        = g(\mu) + g'(\mu)\delta + \frac{1}{2}g''(\mu)\delta^2 + O(\delta^3)
+    \end{equation}
+    ここで、$\delta$は期待値0, 分散$\sigma^2/n$（例\ref{u_est_var}での$V[\bar{X}]$の計算を参照）の確率変数なので、$g(\bar{X})$の偏りは
+    \begin{equation}
+        E[g(\bar{X})] - g(\mu) = O\left(\frac{1}{n}\right)
+    \end{equation}
+    となり、$1/n$のオーダーの偏りが残ることが分かる。
+\end{example}
+
+上の偏りの評価を一般化しておく\footnote{上記と同様、数学的に正確な議論ではない。}。$\hat{\theta}(\boldsymbol{X})$の$\theta$からのずれを$\delta := \hat{\theta}(\boldsymbol{X})$とすると、$g(\hat{\theta}(\boldsymbol{X}))$の偏りは
+\begin{equation}
+    E[g(\hat{\theta}(\boldsymbol{X}))] - g(\theta)
+    = \frac{1}{2}g''(\theta)V[\delta] + O(\delta^3)
+\end{equation}
+
+\begin{example}
+    分散$\sigma^2$の関数$g(\sigma^2)$を考える。不偏分散$S_0^2$は$\sigma^2$の不偏推定量だった。\cite{u_var_var}によると、$X_i$の4次の中心モーメント$\mu_4$の存在を仮定すると、
+    \begin{equation}
+        V[S_0^2]
+        = \frac{1}{n}\left(\mu_4 - \frac{n-3}{n-1}\sigma^4\right)
+    \end{equation}
+    したがって$g(S_0^2)$の$g(\sigma^2)$の推定量としての偏りはやはり$O(1/n)$。特に標準偏差$\sigma := \sqrt{\sigma^2}$を考えると、$(\sqrt{x})'' = -x^{-3/2}/4$より、偏りのリーディングオーダーは
+    \begin{equation}
+        \frac{1}{2}\left(-\frac{\sigma^{-3}}{4}\right)V[S_0^2]
+        = -\frac{\sigma^{-3}}{8}
+        \left(\mu_4 - \frac{n-3}{n-1}\sigma^4\right)
+        \frac{1}{n}
+    \end{equation}
+    なお、一般の分布に対する標準偏差の不偏推定量は知られていない（正規分布など、特定の分布で不偏推定量が知られているものはある）。
+\end{example}
+
+なお、不偏推定量の誤差（後述）が、不偏でない推定量より大きくなる場合もあり、不偏性にこだわりすぎるべきではないという注意もある\cite{kuroki}。
+
+\begin{thebibliography}{9}
+    \bibitem{u_var_var} 不偏分散の分散 \url{https://qiita.com/nloglogn/items/b863f8cea0ec6da42af3}
+    \bibitem{kuroki} \url{https://twitter.com/genkuroki/status/1554714353081155585?s=20}, \url{https://twitter.com/genkuroki/status/1554714834633379840?s=20}
+\end{thebibliography}
 
 \end{document}
