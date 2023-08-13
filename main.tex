@@ -3,11 +3,12 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{thmtools}
 
 \newcommand\term[1]{\textsf{#1}}
-\newtheorem{example}{例}
-\newtheorem{note}{注}
-\newtheorem{theorem}{定理}
+\declaretheorem[name=例,qed=\qedsymbol]{example}
+\declaretheorem[name=注,qed=$\lhd$]{note}
+\declaretheorem[name=定理,qed=\qedsymbol]{theorem}
 
 \begin{document}
 
@@ -231,6 +232,105 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
 
 \begin{note}
     実際の問題において、$n$個の確率変数が得られた際に、それらが独立同分布であるかを意識することは重要だと思う。$n$個の値が得られるがそれらが実は独立ではない（し同分布でもない）という場合、以下で示す性質は成り立たないかもしれない。逆に、以下で示す種々の性質の導出で、独立同分布性を使っているかを意識しておくとよいかもしれない。
+\end{note}
+
+\subsection{推定量と不偏性}
+
+無作為標本$X_1, \dotsc, X_n$の関数を\term{統計量 (statistic)}という。統計量は、未知の分布パラメーターを使わず、標本（の実現値）のみから計算できる量であり、「観測データから計算できる量」と言える。
+
+\begin{example}[標本平均]
+    以下で定義される$\bar{X}$は\term{標本平均 (sample mean)}と呼ばれる基本的な統計量である。
+    \begin{equation}
+        \bar{X} := \frac{1}{n} \sum_{i=1}^n X_i
+    \end{equation}
+\end{example}
+
+未知の分布パラメーター$\theta$に対し、$\theta$の値を推定すると思われる統計量$\hat{\theta}(\boldsymbol{X})$のことを$\theta$の\term{推定量 (estimator)}と呼ぶ。また、$\theta$の関数$g(\theta)$の推定量$\hat{g}(\boldsymbol{X})$を考えることもある。この「定義」自体は、統計量であること以外に推定量の性質を制限していないことに注意。どんな関数でも（例えば定数関数$\hat{\theta}(\boldsymbol{X}):=1$でも）、「$\theta$の推定量」と呼ぶことはできる。したがって、考えている推定量が何らかの意味で「良い」推定量になっているかが重要である。
+
+もっとも基本的な推定量の「良さ」の概念として\term{不偏性 (unbiasedness)}がある。$g(\theta)$の推定量$\hat{g}(\boldsymbol{X})$の期待値を
+\begin{equation}
+    E[\hat{g}(\boldsymbol{X})] = g(\theta) + b
+\end{equation}
+とするとき、真の値$g(\theta)$からのずれ$b := E[\hat{g}(\boldsymbol{X})] - g(\theta)$を\term{偏り (bias)}と呼ぶ。
+（$\theta$に関するパラメトリックモデルを考えている場合は、$b$も$\theta$の関数となり、分布$P_\theta$による期待値を$E_\theta[\cdot]$と書くと
+\begin{equation}
+    E_\theta[\hat{g}(\boldsymbol{X})] = g(\theta) + b(\theta)
+\end{equation}
+となる。）今考えている全ての分布に関して常に$b=0$になる時、すなわち
+\begin{equation}
+    E[\hat{g}(\boldsymbol{X})] = g(\theta)
+\end{equation}
+が成り立つ時、$\hat{g}$を$g(\theta)$の\term{平均不偏推定量 (mean unbiased estimator)}あるいは単に\term{不偏推定量 (unbiased estimator)}という。これは、$\hat{g}(\boldsymbol{X})$の値は確率的に変動するが、平均的には$g(\theta)$に近いことを意味している。
+
+\begin{example}[期待値の不偏推定量]\label{u_est_exp}
+    標本$X_1, \dotsc, X_n$のそれぞれが、期待値$\mu$の分布にしたがうとする。この時、標本平均$\bar{X}$は期待値$\mu$の不偏推定量である。
+    \begin{equation}
+        E[\bar{X}] = E\left[\frac{1}{n}\sum_{i=1}^n X_i\right]
+        = \frac{1}{n}\sum_{i=1}^n E[X_i] = \mu
+    \end{equation}
+    この導出で使用しているのは、各$X_i$の期待値が$\mu$であるという前提のみである。$X_1, \dotsc, X_n$が独立同分布であれば、この条件は当然成り立つ。
+\end{example}
+
+\begin{example}[期待値が既知の場合の分散の不偏推定量]
+    標本$X_1, \dotsc, X_n$のそれぞれが、期待値$\mu$, 分散$\sigma^2$の分布にしたがうとする。今、$\mu$は既知であり、$\sigma^2$を推定したいとする。
+    \begin{equation}
+        S^2(\mu) := \frac{1}{n}\sum_{i=1}^n(X_i-\mu)^2
+    \end{equation}
+    とすると、$S^2(\mu)$は分散$\sigma^2$の不偏推定量である。
+    \begin{equation}
+        E[S^2(\mu)]
+        = E\left[\frac{1}{n}\sum_{i=1}^n(X_i-\mu)^2\right]
+        = \frac{1}{n}\sum_{i=1}^nE[(X_i-\mu)^2]
+        = \sigma^2
+    \end{equation}
+    この導出で使用しているのは、各$X_i$の期待値、分散が$\mu$, $\sigma^2$であるという前提のみである。$X_1, \dotsc, X_n$が独立同分布であれば、この条件は当然成り立つ。
+\end{example}
+
+\begin{example}[期待値が未知の場合の分散の不偏推定量]
+    標本$X_1, \dotsc, X_n$のそれぞれが、期待値$\mu$, 分散$\sigma^2$の分布にしたがうとする。今、$\mu$, $\sigma^2$はともに未知であるとする。例\ref{u_est_exp}より、$\bar{X}$は$\mu$の不偏推定量である。\term{標本分散 (sample variance)} $S^2$を以下で定義する。
+    \begin{equation}
+        S^2 := \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2
+    \end{equation}
+    $S^2$は以下のように式変形できるので
+    \begin{equation}
+        \begin{split}
+            S^2
+            &= \frac{1}{n}\sum_{i=1}^n ((X_i - \mu) - (\bar{X} - \mu))^2\\
+            &= \frac{1}{n}\sum_{i=1}^n (X_i - \mu)^2
+            - \frac{2}{n}(\bar{X} - \mu)\sum_{i=1}^n (X_i - \mu)
+            +(\bar{X} - \mu)^2\\
+            &= \frac{1}{n}\sum_{i=1}^n (X_i - \mu)^2
+            -(\bar{X} - \mu)^2
+        \end{split}
+    \end{equation}
+    ここで、標本平均$\bar{X}$の分散を計算しておく。
+    \begin{equation}
+        V[\bar{X}] = E[(\bar{X} - \mu)^2]
+        = E\left[\left(\sum_{i=1}^n\frac{X_i - \mu}{n}\right)^2\right]
+        = E\left[\sum_{i=1}^n\sum_{j=1}^n\frac{X_i - \mu}{n}\frac{X_j - \mu}{n}\right]
+    \end{equation}
+    $X_i, X_j (i \neq j)$が独立ならば$E[(X_i-\mu)(X_j-\mu)] = E[(X_i-\mu)]E[(X_j-\mu)]$であるから、$X_i$の期待値$\mu$, 分散$\sigma^2$を使って
+    \begin{equation}
+        V[\bar{X}] = E[(\bar{X} - \mu)^2]
+        = E\left[\sum_{i=1}^n\left(\frac{X_i - \mu}{n}\right)^2\right]
+        = \frac{\sigma^2}{n}
+    \end{equation}
+    したがって、標本分散$S^2$の期待値は
+    \begin{equation}
+        E[S^2]
+        = \frac{1}{n}\sum_{i=1}^n V[X_i] - \frac{\sigma^2}{n}
+        = \frac{n-1}{n}\sigma^2
+    \end{equation}
+    となり、$S^2$は分散$\sigma^2$の不偏推定量ではない。あらためて
+    \begin{equation}
+        S_0^2 := \frac{n}{n-1}S^2
+        = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2
+    \end{equation}
+    と定義すると、$S_0^2$は分散$\sigma^2$の不偏推定量になる。$S_0^2$を\term{不偏分散 (unbiased variance)}と呼ぶ。以上の計算では$X_1, \dotsc, X_n$が独立同分布であることを用いた。
+\end{example}
+
+\begin{note}
+    「標本分散」という言葉の使われ方は曖昧で、$n$で割るものを指す場合、$n-1$で割るものを指す場合、両方を指す場合があるらしい。また記号も、$s^2$や$\hat{\sigma}^2$をどちらか（どちらも）に使うことがある。この文書では上の例で書いている通り、$n$で割るものを標本分散$S^2$, $n-1$で割るものを不偏分散$S_0^2$とする。
 \end{note}
 
 \end{document}
