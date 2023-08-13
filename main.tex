@@ -6,6 +6,7 @@
 \newcommand\term[1]{\textsf{#1}}
 \newtheorem{example}{例}
 \newtheorem{note}{注}
+\newtheorem{theorem}{定理}
 
 \begin{document}
 
@@ -35,6 +36,12 @@ $\Omega$の部分集合$A$の確率も以下のように定義できる。
     P(A) := \sum_{\omega\in A}P(\omega)
 \end{equation}
 
+$A$の要素が満たす条件を使って、以下のように書くこともある。
+
+\begin{equation}
+    P(A) = P(\{\omega|\omega\in A\}) = P\{\omega\in A\}
+\end{equation}
+
 確率が与えられた標本空間を\term{確率空間 (probability space)}と呼ぶ。
 
 \begin{note}
@@ -61,6 +68,7 @@ $\Omega$の部分集合$A$の確率も以下のように定義できる。
 
 \begin{equation}
     p_X(x) := P(\{\omega | X(\omega) = x\})
+    = P\{X(\omega) = x\}
     = \sum_{\omega \in \Omega, X(\omega) = x} P(\omega)
 \end{equation}
 
@@ -133,6 +141,17 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
 \begin{equation}
     V[X + Y] = V[X] + V[Y] + 2\operatorname{Cov}[X, Y]
 \end{equation}
+
+分散が満たす重要な性質として、\term{チェビシェフの不等式 (Chebyshev's inequality)}がある。
+
+\begin{theorem}[チェビシェフの不等式]
+    確率変数$X$の期待値$\mu:=E[X]$, 分散$\sigma^2:=V[X] (>0)$に対して、任意の正数$a$について以下が成り立つ。
+    \begin{equation}
+        P\{|X - \mu| \geq a\sigma\} \leq \frac{1}{a^2}
+    \end{equation}
+\end{theorem}
+
+例えば$a=2$とすると、$X$が期待値$\mu$から$2\sigma$以上離れた値を取る確率が$1/4$以下になる。期待値から離れるほど、その確率が小さくなっていくことが分かる。一方、$a=1$とすると確率が1以下という自明な関係になり、実質的に制約にならないことに注意。たとえば正規分布を考えると、$|X-\mu|\geq\sigma$となる確率は約32\%であり、チェビシェフの不等式より強い制約がかかっていることが分かる。
 
 \subsection{独立性}
 
