@@ -336,7 +336,7 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
 
 パラメーター$\theta$の不偏推定量$\hat{\theta}(\boldsymbol{X})$が与えられた時に、$\theta$の関数$g(\theta)$に対して、$g(\hat{\theta}(\boldsymbol{X}))$は一般に不偏推定量ではない。
 
-\begin{example}
+\begin{example}[期待値の関数の推定]
     期待値$\mu$の関数$g(\mu)$を考える。標本平均$\bar{X}=\sum_i X_i/n$は$\mu$の不偏推定量だった。$g(\bar{X})$が$g(\mu)$の不偏推定量になるかを考える。$g$が線形な関数であれば、
     \begin{equation}
         E[g(\bar{X})]
@@ -365,13 +365,14 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
     となり、$1/n$のオーダーの偏りが残ることが分かる。
 \end{example}
 
-上の偏りの評価を一般化しておく\footnote{上記と同様、数学的に正確な議論ではない。}。$\hat{\theta}(\boldsymbol{X})$の$\theta$からのずれを$\delta := \hat{\theta}(\boldsymbol{X})$とすると、$g(\hat{\theta}(\boldsymbol{X}))$の偏りは
+上の偏りの評価を一般化しておく\footnote{上記と同様、数学的に正確な議論ではない。}。$g(\hat{\theta}(\boldsymbol{X}))$の偏りは
 \begin{equation}
     E[g(\hat{\theta}(\boldsymbol{X}))] - g(\theta)
-    = \frac{1}{2}g''(\theta)V[\delta] + O(\delta^3)
+    = \frac{1}{2}g''(\theta)V[\hat{\theta}(\boldsymbol{X})] + O(\delta^3)
 \end{equation}
+であり、$g$が非線形な場合は不偏でない。
 
-\begin{example}
+\begin{example}[分散の関数・標準偏差の推定]\label{est_sd}
     分散$\sigma^2$の関数$g(\sigma^2)$を考える。不偏分散$S_0^2$は$\sigma^2$の不偏推定量だった。\cite{u_var_var}によると、$X_i$の4次の中心モーメント$\mu_4$の存在を仮定すると、
     \begin{equation}
         V[S_0^2]
@@ -384,10 +385,55 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
         \left(\mu_4 - \frac{n-3}{n-1}\sigma^4\right)
         \frac{1}{n}
     \end{equation}
-    なお、一般の分布に対する標準偏差の不偏推定量は知られていない（正規分布など、特定の分布で不偏推定量が知られているものはある）。
 \end{example}
 
+このように、$\sqrt{S_0^2}$は標準偏差の不偏推定量ではないが、一方で分布を問わない標準偏差の不偏推定量は知られていない（正規分布など、特定の分布で不偏推定量が知られているものはある）ため、$\sqrt{S_0^2}$を標準偏差の推定量として使うことが多い。
+
 なお、不偏推定量の誤差（後述）が、不偏でない推定量より大きくなる場合もあり、不偏性にこだわりすぎるべきではないという注意もある\cite{kuroki}。
+
+\subsection{推定量の誤差}
+
+推定量は確率変数なので、パラメーターの推定値は確率的な値として得られることになる。推定値が平均的にはパラメーターと一致するというのが不偏性であったが、得られる推定値が実際にどの程度ずれるかを見るためには、推定量の確率的なばらつきを考慮に入れる必要がある。
+
+パラメーター$\theta$と推定値$\hat{\theta}(\boldsymbol{X})$のずれを評価するために、\term{損失関数 (loss function)} $L(\theta, \hat{\theta}(\boldsymbol{X}))$を考えよう。ここで損失関数$L$は任意の$x$, $y$に対して$L(x, y) \geq 0$, $L(x, x) = 0$を満たすものとする。損失関数の期待値
+\begin{equation}
+    R(\theta, \hat{\theta}) := E[L(\theta, \hat{\theta}(\boldsymbol{X}))]
+\end{equation}
+を\term{リスク関数 (risk function)}という。リスク関数は、損失関数$L$の選び方に応じたある種の推定量の「誤差」を評価していると解釈できる。特に$L$を2乗損失$L(x, y):=(x-y)^2$とするとき、$\hat{\theta}$のリスク関数を$\hat{\theta}$の\term{平均2乗誤差 (mean squared error, MSE)}と呼び、
+\begin{equation}
+    \operatorname{MSE}(\hat{\theta}) := E[(\hat{\theta}(\boldsymbol{X}) - \theta)^2]
+\end{equation}
+と書く。
+\begin{equation}
+    \begin{split}
+    \operatorname{MSE}(\hat{\theta})
+    &= E\left[\left(
+        (\hat{\theta}(\boldsymbol{X}) - E[\hat{\theta}(\boldsymbol{X})]) +
+        (E[\hat{\theta}(\boldsymbol{X})] - \theta)
+    \right)^2\right] \\
+    &= E[(\hat{\theta}(\boldsymbol{X}) - E[\hat{\theta}(\boldsymbol{X})])^2] +
+    (E[\hat{\theta}(\boldsymbol{X})] - \theta)^2 \\
+    &= V[\hat{\theta}(\boldsymbol{X})] +
+    (E[\hat{\theta}(\boldsymbol{X})] - \theta)^2
+    \end{split}
+\end{equation}
+より、MSEは推定量$\hat{\theta}(\boldsymbol{X})$の分散と、推定量の期待値の$\theta$からのずれの2乗の和になる。特に$\hat{\theta}(\boldsymbol{X})$が$\theta$の不偏推定量の場合、$\operatorname{MSE}(\hat{\theta}) = V[\hat{\theta}]$であり、推定量の分散（または標準偏差）で推定の誤差を評価できる。推定量の標準偏差を\term{標準誤差 (standard error)}と呼び、推定誤差の尺度としてよく用いられる。
+
+\begin{example}[標本平均の誤差（標準誤差）]
+    $X_1, \dotsc, X_n$が期待値$\mu$, 分散$\sigma^2$の独立同分布であるとき、標本平均$\bar{X}$は期待値$\mu$の不偏推定量であった。$\bar{X}$の分散を例\ref{u_est_var}で計算したが、ここにも再度載せておく。
+    \begin{equation}
+        V[\bar{X}] = E[(\bar{X} - \mu)^2]
+        = E\left[\left(\sum_{i=1}^n\frac{X_i - \mu}{n}\right)^2\right]
+        = E\left[\sum_{i=1}^n\sum_{j=1}^n\frac{X_i - \mu}{n}\frac{X_j - \mu}{n}\right]
+    \end{equation}
+    $X_i, X_j (i \neq j)$が独立なので$E[(X_i-\mu)(X_j-\mu)] = E[(X_i-\mu)]E[(X_j-\mu)]$であるから、$X_i$の期待値$\mu$, 分散$\sigma^2$を使って
+    \begin{equation}
+        V[\bar{X}] = E[(\bar{X} - \mu)^2]
+        = E\left[\sum_{i=1}^n\left(\frac{X_i - \mu}{n}\right)^2\right]
+        = \frac{\sigma^2}{n}
+    \end{equation}
+    $\mu$の不偏推定量$\bar{X}$の標準誤差は、$\sqrt{V[\bar{X}]}=\sigma/\sqrt{n}$である。$\sigma$が未知の場合、この標準誤差自体も未知であり推定の対象となる。例\ref{est_sd}とその直後で述べたように、$\sigma$の（不偏ではない）推定量として不偏分散$S_0^2$の2乗根を使うと、標準誤差を$\sqrt{S_0^2/n}$で推定できる。なお例\ref{est_sd}で見た通り、$\sigma$の推定量としての$\sqrt{S_0^2}$の偏りは$O(1/n)$であるから、標準誤差の推定における偏りは$O(n^{-3/2})$である。
+\end{example}
 
 \begin{thebibliography}{9}
     \bibitem{u_var_var} 不偏分散の分散 \url{https://qiita.com/nloglogn/items/b863f8cea0ec6da42af3}
