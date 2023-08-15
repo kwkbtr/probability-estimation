@@ -538,9 +538,54 @@ $X_1, \dotsc, X_n$が、分布$p(x; \theta)$からの無作為標本（独立同
 \end{equation}
 したがって、推定量の分散は最良で$1/n$のスケーリングになることが分かる。したがって標本平均は、$n$に関するスケーリングとしては最良である。
 
+\section{大標本の漸近的な性質}
+
+期待値$\mu$, 分散$\sigma^2>0$の分布からの無作為標本（独立同分布）$X_1, \dotsc, X_n$について、$n\to\infty$で漸近的に成り立つ性質について紹介する。$n$がある程度大きい時の近似として有効かもしれない。
+
+\subsection{大数の法則}
+
+標本平均$\bar{X} := \sum_{i=1}^n X_i/n$について、その期待値と分散はそれぞれ$\mu$, $\sigma^2/n$なので、標本平均の分布に関するチェビシェフの不等式において$a=\varepsilon\sqrt{n}/\sigma$（$\varepsilon$は任意の正数）とすると、
+\begin{equation}
+    P\{|\bar{X} - \mu| > \varepsilon\} \leq \frac{\sigma^2}{\varepsilon^2 n}
+\end{equation}
+が成り立つ。したがって$n\to\infty$とすれば、以下の\term{大数の（弱）法則 ((weak) law of large numbers)}が成り立つ。
+
+\begin{theorem}[大数の（弱）法則]
+    任意の正数$\varepsilon$について、標本平均$\bar{X}$と期待値$\mu$が$\varepsilon$より大きくずれる確率は、$n\to\infty$で$0$に収束する。
+    \begin{equation}
+        \lim_{n\to\infty} P\{|\bar{X} - \mu|>\varepsilon\} = 0
+    \end{equation}
+\end{theorem}
+
+\subsection{中心極限定理}
+
+標本平均$\bar{X} := \sum_{i=1}^n X_i/n$の分布は、$n\to\infty$で期待値$\mu$, 分散$\sigma^2/n$の正規分布に収束する。これを\term{中心極限定理 (central limit theorem, CLT)}という。
+
+\begin{theorem}[中心極限定理]
+    $\sqrt{n}(\bar{X}-\mu)/\sigma$の分布は、$n\to\infty$で標準正規分布$N(0, 1)$に収束する。すなわち$N(0, 1)$の累積分布関数を$\Phi(t)$とすると、任意の実数$t$について
+    \begin{equation}
+        \lim_{n\to\infty} P\left\{
+            \frac{\sqrt{n}(\bar{X}-\mu)}{\sigma} \leq t
+        \right\} = \Phi(t)
+    \end{equation}
+    が成り立つ。
+\end{theorem}
+
+\begin{note}
+    前節で見た通り、$n$が有限でも$\bar{X}$の期待値と分散はそれぞれ$\mu$, $\sigma^2/n$であることが示せる。したがって中心極限定理は、$n\to\infty$での3次以上のモーメントの振る舞いを決めているだけ、と考えることができる？
+\end{note}
+
 \begin{thebibliography}{9}
-    \bibitem{u_var_var} 不偏分散の分散 \url{https://qiita.com/nloglogn/items/b863f8cea0ec6da42af3}
-    \bibitem{kuroki} \url{https://twitter.com/genkuroki/status/1554714353081155585?s=20}, \url{https://twitter.com/genkuroki/status/1554714834633379840?s=20}
+    \bibitem{akahira}
+        赤平昌文『統計的不偏推定論』
+        統計学One Point 17（共立出版、2019）
+        \url{https://www.kyoritsu-pub.co.jp/book/b10003219.html}
+    \bibitem{u_var_var}
+        不偏分散の分散
+        \url{https://qiita.com/nloglogn/items/b863f8cea0ec6da42af3}
+    \bibitem{kuroki}
+        \url{https://twitter.com/genkuroki/status/1554714353081155585?s=20},\\
+        \url{https://twitter.com/genkuroki/status/1554714834633379840?s=20}
 \end{thebibliography}
 
 \end{document}
