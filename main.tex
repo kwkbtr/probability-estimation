@@ -292,7 +292,7 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
     \begin{equation}
         S^2 := \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2
     \end{equation}
-    $S^2$は以下のように式変形できるので
+    $S^2$は以下のように式変形できる。
     \begin{equation}
         \begin{split}
             S^2
@@ -310,7 +310,7 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
         = E\left[\left(\sum_{i=1}^n\frac{X_i - \mu}{n}\right)^2\right]
         = E\left[\sum_{i=1}^n\sum_{j=1}^n\frac{X_i - \mu}{n}\frac{X_j - \mu}{n}\right]
     \end{equation}
-    $X_i, X_j (i \neq j)$が独立ならば$E[(X_i-\mu)(X_j-\mu)] = E[(X_i-\mu)]E[(X_j-\mu)]$であるから、$X_i$の期待値$\mu$, 分散$\sigma^2$を使って
+    $X_i, X_j (i \neq j)$が独立ならば$E[(X_i-\mu)(X_j-\mu)] = E[(X_i-\mu)]E[(X_j-\mu)] = 0$であるから、$X_i$の期待値$\mu$, 分散$\sigma^2$を使って
     \begin{equation}
         V[\bar{X}] = E[(\bar{X} - \mu)^2]
         = E\left[\sum_{i=1}^n\left(\frac{X_i - \mu}{n}\right)^2\right]
@@ -333,6 +333,53 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
 \begin{note}
     「標本分散」という言葉の使われ方は曖昧で、$n$で割るものを指す場合、$n-1$で割るものを指す場合、両方を指す場合があるらしい。また記号も、$s^2$や$\hat{\sigma}^2$をどちらか（どちらも）に使うことがある。この文書では上の例で書いている通り、$n$で割るものを標本分散$S^2$, $n-1$で割るものを不偏分散$S_0^2$とする。
 \end{note}
+
+\begin{example}[期待値が未知の場合の共分散の不偏推定量]
+    標本$(X_1, Y_1), \dotsc, (X_n, Y_n)$のそれぞれが、期待値$\mu_X$, $\mu_Y$, 共分散$\sigma_{XY}$の分布にしたがうとする。今、$\mu_X$, $\mu_Y$, $\sigma_{XY}$は未知であるとする。例\ref{u_est_exp}より、$\bar{X}$, $\bar{Y}$は$\mu_X$, $\mu_Y$の不偏推定量である。\term{標本共分散 (sample covariance)} $S_{XY}$を以下で定義する。
+    \begin{equation}
+        S_{XY} := \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})
+    \end{equation}
+    $S_{XY}$は以下のように式変形できる。
+    \begin{equation}
+        \begin{split}
+            S_{XY}
+            &= \frac{1}{n}\sum_{i=1}^n
+            \left((X_i-\mu_X)-(\bar{X}-\mu_X)\right)
+            \left((Y_i-\mu_Y)-(\bar{Y}-\mu_Y)\right) \\
+            &= \frac{1}{n}\sum_{i=1}^n (X_i - \mu_X)(Y_i - \mu_Y)
+            + (\bar{X} - \mu_X)(\bar{Y} - \mu_Y) \\
+            &\quad - \frac{1}{n}(\bar{X} - \mu_X) \sum_{i=1}^n (Y_i - \mu_Y)
+            - \frac{1}{n}(\bar{Y} - \mu_X) \sum_{i=1}^n (X_i - \mu_X) \\
+            &= \frac{1}{n}\sum_{i=1}^n (X_i - \mu_X)(Y_i - \mu_Y)
+            - (\bar{X} - \mu_X)(\bar{Y} - \mu_Y)
+        \end{split}
+    \end{equation}
+    ここで、標本平均$\bar{X}$, $\bar{Y}$の共分散を計算しておく。
+    \begin{equation}
+        \operatorname{Cov}[\bar{X}, \bar{Y}]
+        = E[(\bar{X} - \mu_X)(\bar{Y} - \mu_Y)]
+        = E\left[\sum_{i, j=1}^n\frac{X_i - \mu_X}{n}\frac{Y_j - \mu_Y}{n}\right]
+    \end{equation}
+    $(X_i, Y_i)$, $(X_j, Y_j)$ ($i \neq j$)が独立ならば$E[(X_i-\mu_X)(Y_i-\mu_Y)] = E[(X_i-\mu_X)]E[(Y_i-\mu_Y)] = 0$であるから、
+    \begin{equation}
+        \operatorname{Cov}[\bar{X}, \bar{Y}]
+        = E[(\bar{X} - \mu_X)(\bar{Y} - \mu_Y)]
+        = E\left[\sum_{i=1}^n\frac{X_i - \mu_X}{n}\frac{Y_i - \mu_Y}{n}\right]
+        = \frac{\sigma_{XY}}{n}
+    \end{equation}
+    したがって、標本共分散$S_{XY}$の期待値は
+    \begin{equation}
+        E[S_{XY}]
+        = \frac{1}{n}\sum_{i=1}^n E[(X_i - \mu_X)(Y_i - \mu_Y)] - \frac{\sigma_{XY}}{n}
+        = \frac{n-1}{n}\sigma_{XY}
+    \end{equation}
+    となり、$S_{XY}$は共分散$\sigma_{XY}$の不偏推定量ではない。あらためて
+    \begin{equation}
+        S_{XY0} := \frac{n}{n-1}S_{XY}
+        = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})
+    \end{equation}
+    と定義すると、$X_{XY0}$は共分散$\sigma_{XY}$の不偏推定量になる。$S_{XY0}$を\term{不偏共分散 (unbiased covariance)}と呼ぶ。以上の計算では$(X_1, Y_1), \dotsc, (X_n, Y_n)$が独立同分布であることを用いた。
+\end{example}
 
 パラメーター$\theta$の不偏推定量$\hat{\theta}(\boldsymbol{X})$が与えられた時に、$\theta$の関数$g(\theta)$に対して、$g(\hat{\theta}(\boldsymbol{X}))$は一般に不偏推定量ではない。
 
