@@ -482,6 +482,62 @@ $X$の関数$Y=f(X)$もまた確率変数であり、$Y$の期待値を考える
     $\mu$の不偏推定量$\bar{X}$の標準誤差は、$\sqrt{V[\bar{X}]}=\sigma/\sqrt{n}$である。$\sigma$が未知の場合、この標準誤差自体も未知であり推定の対象となる。例\ref{est_sd}とその直後で述べたように、$\sigma$の（不偏ではない）推定量として不偏分散$S_0^2$の2乗根を使うと、標準誤差を$\sqrt{S_0^2/n}$で推定できる。なお例\ref{est_sd}で見た通り、$\sigma$の推定量としての$\sqrt{S_0^2}$の偏りは$O(1/n)$であるから、標準誤差の推定における偏りは$O(n^{-3/2})$である。
 \end{example}
 
+よい推定を行うためにはできるだけ誤差の小さい推定量を見つけたいが、一般には、対象とする（パラメトリックな）分布族の関数形を特定しなければそのような議論はできない。一方、分布の形を限定せずに成り立つ重要な性質として\term{クラメール・ラオの不等式 (Cram\'{e}r-Rao inequality)}がある。
+
+標本$\boldsymbol{X} = (X_1, \dotsc, X_n)$の分布関数が、パラメーター$\theta$を含む関数$f_{\boldsymbol{X}}(\boldsymbol{X}; \theta)$であるとする。この時、\term{フィッシャー情報量 (Fisher information)}を以下で定義する（適当な微分可能性を仮定する）。
+\begin{equation}
+    I_{\boldsymbol{X}}(\theta) := E_\theta\left[
+        \left(
+            \frac{\partial}{\partial \theta}
+            \log f_{\boldsymbol{X}}(\boldsymbol{X}; \theta)
+        \right)^2
+    \right]
+\end{equation}
+
+以下、$f_{\boldsymbol{X}}(\boldsymbol{X}; \theta)$が適当な正則条件（$\boldsymbol{X}$に関する和・積分と$\theta$に関する微分が交換可能など）を満たすことを仮定する。この時、以下が成り立つ。
+
+\begin{theorem}[クラメール・ラオ(Cram\'{e}r-Rao)の不等式]
+    微分可能な関数$g(\theta)$の任意の不偏推定量$\hat{g}=\hat{g}(\boldsymbol{X})$について、
+    \begin{equation}
+        V_\theta[\hat{g}] \geq
+        \frac{(g'(\theta))^2}{I_{\boldsymbol{X}}(\theta)}
+    \end{equation}
+    が成り立つ。右辺を\term{クラメール・ラオの下界 (Cram\'{e}r-Rao bound)}という。等号は以下の場合にのみ成り立つ。
+    \begin{equation}
+        \frac{\partial}{\partial\theta}
+        \log f_{\boldsymbol{X}}(\boldsymbol{X}; \theta)
+        = I_{\boldsymbol{X}}(\theta)
+        \frac{\hat{g}(\boldsymbol{x}) - g(\theta)}{g'(\theta)}
+    \end{equation}
+\end{theorem}
+
+ここで、$g(\theta)=\theta$, $\hat{g}=\hat{\theta}$の場合を考えると、
+\begin{equation}
+    V_\theta[\hat{\theta}] \geq \frac{1}{I_{\boldsymbol{X}}(\theta)}
+\end{equation}
+
+また、$\hat{g}(\boldsymbol{X})$が偏り$b(\theta):=E_\theta[\hat{g}(\boldsymbol{X})]-g(\theta)$を持つ場合を考えると、$\hat{g}(\boldsymbol{X})$は$g(\theta)+b(\theta)$の不偏推定量と考えられるから、これにCR不等式を適用すると
+\begin{equation}
+    V_\theta[\hat{g}] \geq
+    \frac{(g'(\theta)+b'(\theta))^2}{I_{\boldsymbol{X}}(\theta)}
+\end{equation}
+MSEは推定量の分散と偏りの2乗の和だったから、MSEには以下の下界が存在することが分かる。
+\begin{equation}
+    \operatorname{MSE}_\theta(\hat{g}) \geq
+    \frac{(g'(\theta)+b'(\theta))^2}{I_{\boldsymbol{X}}(\theta)}
+    + b(\theta)^2
+\end{equation}
+$|g'(\theta)+b'(\theta)|< |g'(\theta)|$となる場合、$V_\theta[\hat{g}]$, $\operatorname{MSE}_\theta(\hat{g})$はCRの下界を下回る場合もある。
+
+なお、CRの下界を達成する不偏推定量は存在しない場合もある。
+
+$X_1, \dotsc, X_n$が、分布$p(x; \theta)$からの無作為標本（独立同分布）の場合、$I_{\boldsymbol{X}}(\theta) - nI_{X_1}(\theta)$となり、
+\begin{equation}
+    V_\theta[\hat{g}] \geq
+    \frac{(g'(\theta))^2}{nI_{X_1}(\theta)}
+\end{equation}
+したがって、推定量の分散は最良で$1/n$のスケーリングになることが分かる。したがって標本平均は、$n$に関するスケーリングとしては最良である。
+
 \begin{thebibliography}{9}
     \bibitem{u_var_var} 不偏分散の分散 \url{https://qiita.com/nloglogn/items/b863f8cea0ec6da42af3}
     \bibitem{kuroki} \url{https://twitter.com/genkuroki/status/1554714353081155585?s=20}, \url{https://twitter.com/genkuroki/status/1554714834633379840?s=20}
